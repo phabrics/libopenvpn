@@ -99,6 +99,9 @@ libopenvpn_la_SOURCES += openvpn_win32_resources.rc
 libopenvpn_la_LIBADD += -lgdi32 -lws2_32 -lwininet -lcrypt32 -liphlpapi -lwinmm
 endif
 
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libopenvpn.pc
+
 nobase_pkginclude_HEADERS = \
 	base64.h \
 	basic.h \
@@ -181,6 +184,3 @@ nobase_pkginclude_HEADERS = \
 
 SUBDIRS = lib
 
-.PHONY: modules
-
-modules:

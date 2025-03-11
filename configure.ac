@@ -545,5 +545,6 @@ LDFLAGS="${LDFLAGS-} -no-undefined"
 
 AC_CONFIG_FILES([Makefile
           lib/Makefile
+	  libopenvpn.pc
 ])
 AC_OUTPUT
