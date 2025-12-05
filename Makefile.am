@@ -51,6 +51,7 @@ libopenvpn_la_SOURCES = \
 	pkcs11_openssl.c \
 	pkcs11_polarssl.c \
         openvpn.c \
+	openvpn-setup.c \
 	options.c \
 	otime.c \
 	packet_id.c \
@@ -147,6 +148,7 @@ nobase_pkginclude_HEADERS = \
 	occ.h occ-inline.h \
 	openvpn.h \
 	openvpn-plugin.h \
+	openvpn-setup.h \
 	options.h \
 	otime.h \
 	packet_id.h \
