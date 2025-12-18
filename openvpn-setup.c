@@ -156,7 +156,7 @@ struct env_set *openvpn_setup(const char *args[], int argc, struct options *opti
   show_library_versions(M_INFO);
 
   /* misc stuff */
-  pre_setup(options);
+  //  pre_setup(options);
 
   /* set certain options as environmental variables */
   setenv_settings(es, options);
