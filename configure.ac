@@ -27,7 +27,7 @@ AC_CHECK_DEFINE(__EMSCRIPTEN__, [
 				[host_type=$host_os])
 
 AC_DEFINE_UNQUOTED([TARGET_ALIAS], ["${host}"], [A string representing our host])
-lto=no
+lto=yes
 case "${host_os}" in
 netbsd*) 
    AC_DEFINE([TARGET_NETBSD], [1], [Are we running NetBSD?])
@@ -53,7 +53,6 @@ linux*)
    AC_DEFINE([TARGET_LINUX], [1], [Are we running on Linux?])
    AC_DEFINE_UNQUOTED([TARGET_PREFIX], ["L"], [Target prefix])
    CPPFLAGS="${CPPFLAGS-}"
-   lto=yes
    ;;
 mingw* | msys*)
    AC_DEFINE([TARGET_WIN32], [1], [Are we running WIN32?])
@@ -64,6 +63,8 @@ mingw* | msys*)
    host_type=
    if test "x${enable_shared}" = "xno" || test "x${host_cpu}" = "xi686"; then
       lto=${GCC}
+   else
+      lto=no
    fi
    ;;
 cygwin*)   
@@ -86,19 +87,6 @@ darwin*)
    host_type=
    ;;
 esac
-
-AC_MSG_CHECKING([for link-time optimization (LTO)])
-
-AC_ARG_ENABLE(lto,
-[  --enable-lto      compile with link-time optimizations (default=supported)],
-[ ],[ enable_lto=$lto ])
-
-AC_MSG_RESULT($enable_lto)
-
-if test "x${enable_lto}" = "xyes"; then
-  CFLAGS="${CFLAGS-} -flto"
-  LDFLAGS="${LDFLAGS-} -flto"
-fi
 
 AM_CONDITIONAL([WIN32], [test "${WIN32}" = "yes"])
 
@@ -492,10 +480,29 @@ AC_ARG_ENABLE(debug,
 if test "x${enable_debug}" = "xyes"; then
   CPPFLAGS="${CPPFLAGS-} -DENABLE_DEBUG"
   if test "x${have_Og}" = xyes; then
-     CFLAGS="${CFLAGS-} -Og"
-     CXXFLAGS="${CXXFLAGS-} -g3 -Og"
-  fi			   
+    CFLAGS="-g3 -Og"
+  else
+    CFLAGS="-g3 -O2"
+  fi
+else
+  CFLAGS="-O3"
 fi
+
+AC_MSG_CHECKING([for link-time optimization (LTO)])
+
+AC_ARG_ENABLE(lto,
+[  --enable-lto      optimize with link-time optimizer (default=yes if supported)],
+[ ],[ enable_lto=$lto ])
+
+if test "x${enable_lto}" = "xyes"; then
+  if test "x${have_Og}" = xyes || test "x${have_clang}" = xyes; then
+     CFLAGS="${CFLAGS-} -flto=auto"
+  else
+     enable_lto=no  
+  fi
+fi
+
+AC_MSG_RESULT($enable_lto)
 
 AC_ARG_ENABLE(warnings,
 [  --disable-warnings      don't compile with warnings turned on (default=don't)],
@@ -518,21 +525,6 @@ else
   CXXFLAGS="${CXXFLAGS-} -W"
 fi
 
-if test "x${enable_shared}" = "xno" || test "x${host_cpu}" = "xi686"; then
-   lto=${GCC}
-else
-   lto=no
-fi
-
-AC_ARG_ENABLE(lto,
-[  --enable-lto      compile with link-time optimizations (default=supported)],
-[ ],[ enable_lto=$lto ])
-
-if test "x${enable_lto}" = "xyes"; then
-  CFLAGS="${CFLAGS-} -flto"
-  LDFLAGS="${LDFLAGS-} -flto"
-fi
-
 dnl Some code isn't alias-clean.
 CFLAGS_NO_STRICT_ALIASING=
 if test "x${GCC}" = "xyes"; then
@@ -541,7 +533,9 @@ fi
 AC_SUBST(CFLAGS_NO_STRICT_ALIASING)
 
 dnl For platforms, like Windows, where libraries must have all their symbols resolved
-LDFLAGS="${LDFLAGS-} -no-undefined"
+if test "x${WIN32}" != x; then
+   LDFLAGS="${LDFLAGS-} -no-undefined"
+fi
 
 AC_CONFIG_FILES([Makefile
           lib/Makefile
