@@ -100,7 +100,7 @@ libopenvpn_la_SOURCES += openvpn_win32_resources.rc
 libopenvpn_la_LIBADD += -lgdi32 -lws2_32 -lwininet -lcrypt32 -liphlpapi -lwinmm
 endif
 
-pkgconfigdir = $(libdir)/pkgconfig
+pkgconfigdir = $(datadir)/pkgconfig
 pkgconfig_DATA = libopenvpn.pc
 
 nobase_pkginclude_HEADERS = \
@@ -110,6 +110,7 @@ nobase_pkginclude_HEADERS = \
 	circ_list.h \
 	clinat.h \
 	common.h \
+	config.h \
 	console.h \
 	cryptoapi.h \
 	crypto.h crypto_backend.h \

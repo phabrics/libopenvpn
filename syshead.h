@@ -55,6 +55,7 @@
 #ifdef _OPENVPN_IMPL
 #include "compat.h"
 #include "compat-stdbool.h"
+#endif
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -706,8 +707,6 @@
  */
 #ifdef TARGET_LINUX
 #define ENABLE_MEMSTATS
-#endif
-
 #endif
 
 #ifdef WIN32
