@@ -42,6 +42,7 @@
 #include "syshead.h"
 #include "tun.h"
 #include "link.h"
+#include "lladdr.h"
 #include "options.h"
 #include "openvpn-setup.h"
 
