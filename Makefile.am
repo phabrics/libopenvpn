@@ -110,7 +110,6 @@ nobase_pkginclude_HEADERS = \
 	circ_list.h \
 	clinat.h \
 	common.h \
-	config.h \
 	console.h \
 	cryptoapi.h \
 	crypto.h crypto_backend.h \
